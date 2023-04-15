@@ -16,8 +16,9 @@ n_param = length(v_param_names)
 #Target Matrix
 targetMatrix = matrix(data = 1, nrow = 1, ncol = 3)
 
+#Logic
 for(i in 1:numberOfGenerations){
-  output = updateBounds(numSamples = 10, targetMatrix = targetMatrix)
+  output = updateBounds(numSamples = 5, targetMatrix = targetMatrix)
   lb = output[1]
   ub = output[2]
   topResults = output[3]

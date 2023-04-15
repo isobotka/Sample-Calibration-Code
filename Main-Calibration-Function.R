@@ -2,7 +2,7 @@
 source("LHS-Support-Function.R")
 
 # Control Parameters
-stopTime = 60 #How many cycles to stop each calibration round at
+stopTime = 30*12 #How many cycles to stop each calibration round at
 samplesToKeep = 0.5
 
 findMSE = function(tempCohort, LHSGenParameters, targetMatrix){
@@ -21,28 +21,33 @@ findMSE = function(tempCohort, LHSGenParameters, targetMatrix){
       updateState(tempCohort, LHSGenParameters, cycleNum = count)
     }
     
-    if(count==60||count>=5){
-      #Find MSE Code using percent difference
-      var1 = tempCohort$var1
-      var2 = tempCohort$var2
-      var3 = tempCohort$var3
-      
-      target1 = targetMatrix[1]
-      target2 = targetMatrix[2]
-      target3 = targetMatrix[3]
-      
-      tempMSE = abs(var1 - target1)/((var1+target1)/2)
-      tempMSE = tempMSE + abs(var2 - target2)/((var2+target2)/2)
-    }
+    #Find MSE Code using percent difference
+    var1 = tempCohort$var1
+    var2 = tempCohort$var2
+    var3 = tempCohort$var3
+    
+    target1 = targetMatrix[1]
+    target2 = targetMatrix[2]
+    target3 = targetMatrix[3]
+    
+    tempMSE = abs(var1 - target1)/((var1+target1)/2)
+    tempMSE = tempMSE + abs(var2 - target2)/((var2+target2)/2)
+    tempMSE = tempMSE + abs(var3 - target3)/((var3+target3)/2)
+    
+    if(count<120) tempMSE = tempMSE * 100
+    
     if(count==stopTime) break
     #Or add any stop parameters
   }
+  
+  MSE = tempMSE
   
   timeAfter = proc.time()[[3]] - timeBefore
   cat("\nMSE Calculation Time:", timeAfter, "\n")
   
   return(MSE)
 }
+
 
 
 # Function which tests a generated set of LHS parameters and updates the lb + ub
